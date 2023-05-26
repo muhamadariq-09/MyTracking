@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity"
+    android:background="@color/skyblue">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/teksregis"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="70dp"
+        android:text="Register"
+        android:fontFamily="@font/poppins_bold"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/teksregis"
+        android:id="@+id/teksdua"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="24dp"
+        android:text="Create a new account"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/layout1"
+        android:layout_below="@id/teksdua"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/teksnama"
+            android:layout_marginTop="20dp"
+            android:text="Full Name"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/edt_nama"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
+            android:hint="Full Name"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="12sp"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/teksemail"
+            android:layout_marginTop="20dp"
+            android:text="Email Address"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/edt_email"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
+            android:hint="Email Address "
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="12sp"
+            android:inputType="textEmailAddress" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/teksphone"
+            android:layout_marginTop="20dp"
+            android:text="Phone"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/edt_phone"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
+            android:hint="Phone"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="12sp"
+            android:inputType="textVisiblePassword" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tekspassword"
+            android:layout_marginTop="20dp"
+            android:text="Password"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/edt_password"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
+            android:hint="Password"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="12sp"
+            android:inputType="textVisiblePassword" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout1"
+        android:width="230dp"
+        android:height="53dp"
+        android:id="@+id/buttonregis"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Register"
+        android:textColor="@color/white"
+        android:background="@drawable/button_shape"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="14sp"/>
+    <Button
+        android:id="@+id/teksregister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonregis"
+        android:layout_marginTop="22dp"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Have an account? Sign in "
+        android:textColor="@color/white"
+        android:backgroundTint="@color/skyblue"
+        android:textSize="12sp" />
+</RelativeLayout>
