@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashActivity"
+    tools:context=".activity.onboard.SplashActivity"
     android:background="@color/skyblue">
     
     <ImageView
@@ -22,7 +22,7 @@
         android:id="@+id/tekssatu"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:text="SITAPOK"
+        android:text="@string/sitapok"
         android:fontFamily="@font/poppins_bold"
         android:textSize="20sp"
         android:textColor="@color/white"
@@ -34,7 +34,7 @@
         android:id="@+id/teksdua"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Sistem Tracking Angkutan Kota Depok"
+        android:text="@string/sitapokDesc"
         android:fontFamily="@font/poppins_regular"
         android:textSize="14sp"
         android:textColor="@color/white"
@@ -48,7 +48,7 @@
         android:id="@+id/buttonsatu"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:text="Get Started"
+        android:text="@string/get_started"
         android:textColor="@color/white"
         android:background="@drawable/button_shape"
         android:fontFamily="@font/poppins_semibold"

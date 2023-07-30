@@ -1,4 +1,4 @@
-package com.example.mytracking
+package com.example.mytracking.activity.onboard
 
 import android.content.Intent
 import android.os.Build
@@ -6,24 +6,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import com.example.mytracking.databinding.ActivityMainBinding
+import com.example.mytracking.databinding.ActivitySplashBinding
 
 
+class SplashActivity : AppCompatActivity() {
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivitySplashBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val forwardButton = binding.forward
+        val startButton = binding.buttonsatu
 
-            forwardButton.setOnClickListener {
-                val moveIntent = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivity(moveIntent)
-            }
+
+        startButton.setOnClickListener {
+            val moveIntent = Intent(this@SplashActivity, MainActivity::class.java)
+            startActivity(moveIntent)
+        }
         setupView()
+
     }
 
     private fun setupView(){
@@ -38,4 +40,5 @@ class MainActivity : AppCompatActivity() {
         }
         supportActionBar?.hide()
     }
+
 }

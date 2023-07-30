@@ -84,6 +84,14 @@
             android:layout_marginRight="24dp"
             motion:layout_constraintVertical_bias="0.088"
             motion:transitionEasing="linear" />
+        <Constraint
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/forwardButton"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="32dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_editor_absoluteX="323dp" />
 
     </ConstraintSet>
     <Transition

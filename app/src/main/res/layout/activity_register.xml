@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity"
+    tools:context=".activity.auth.RegisterActivity"
     android:background="@color/skyblue">
 
     <TextView
@@ -14,7 +14,7 @@
         android:id="@+id/teksregis"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="70dp"
-        android:text="Register"
+        android:text="@string/registerText"
         android:fontFamily="@font/poppins_bold"
         android:textSize="20sp"
         android:textColor="@color/white"
@@ -26,7 +26,7 @@
         android:id="@+id/teksdua"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="24dp"
-        android:text="Create a new account"
+        android:text="@string/create_a_new_account"
         android:fontFamily="@font/poppins_regular"
         android:textSize="12sp"
         android:textColor="@color/white"
@@ -44,90 +44,120 @@
             android:layout_height="wrap_content"
             android:id="@+id/teksnama"
             android:layout_marginTop="20dp"
-            android:text="Full Name"
+            android:text="@string/full_name"
             android:fontFamily="@font/poppins_medium"
             android:textSize="12sp"
             android:textColor="@color/white"
             />
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nama_edt"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/edt_nama"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:hint="Full Name"
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="12sp"
-            android:inputType="text" />
+            android:layout_height="wrap_content"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/edt_nama"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/poppins_regular"
+                tools:text="@string/full_name"
+                android:inputType="text"
+                android:paddingLeft="10dp"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/teksemail"
             android:layout_marginTop="20dp"
-            android:text="Email Address"
+            android:text="@string/email_address"
             android:fontFamily="@font/poppins_medium"
             android:textSize="12sp"
             android:textColor="@color/white"
             />
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_edt"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/edt_email"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:hint="Email Address "
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="12sp"
-            android:inputType="textEmailAddress" />
+            android:layout_height="wrap_content"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/poppins_regular"
+                tools:text="@string/email_address"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10dp"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/teksphone"
             android:layout_marginTop="20dp"
-            android:text="Phone"
+            android:text="@string/phone"
             android:fontFamily="@font/poppins_medium"
             android:textSize="12sp"
             android:textColor="@color/white"
             />
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phone_edt"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/edt_phone"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:hint="Phone"
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="12sp"
-            android:inputType="textVisiblePassword" />
+            android:layout_height="wrap_content"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/edt_phone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/poppins_regular"
+                tools:text="@string/phone"
+                android:inputType="number"
+                android:paddingLeft="10dp"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tekspassword"
             android:layout_marginTop="20dp"
-            android:text="Password"
+            android:text="@string/password"
             android:fontFamily="@font/poppins_medium"
             android:textSize="12sp"
             android:textColor="@color/white"
             />
-        <EditText
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_edt"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/edt_password"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:hint="Password"
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="12sp"
-            android:inputType="textVisiblePassword" />
+            android:layout_height="wrap_content"
+            app:hintEnabled="true"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/poppins_regular"
+                tools:text="@string/password"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <Button
@@ -136,24 +166,23 @@
         android:layout_below="@+id/layout1"
         android:width="230dp"
         android:height="53dp"
-        android:id="@+id/buttonregis"
+        android:id="@+id/btnRegis"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Register"
+        android:text="@string/registerText"
         android:textColor="@color/white"
         android:background="@drawable/button_shape"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="14sp"/>
-    <Button
-        android:id="@+id/teksregister"
+    <TextView
+        android:id="@+id/txtSignin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonregis"
+        android:layout_below="@+id/btnRegis"
         android:layout_marginTop="22dp"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/poppins_medium"
-        android:text="Have an account? Sign in "
+        android:text="@string/have_an_account_sign_in"
         android:textColor="@color/white"
-        android:backgroundTint="@color/skyblue"
         android:textSize="12sp" />
 </RelativeLayout>

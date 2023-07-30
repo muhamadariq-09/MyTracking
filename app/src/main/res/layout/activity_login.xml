@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
+    tools:context=".activity.auth.LoginActivity"
     android:background="@color/skyblue">
 
     <TextView
@@ -14,7 +14,7 @@
         android:id="@+id/tekslogin"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="100dp"
-        android:text="Sign In"
+        android:text="@string/signInText"
         android:fontFamily="@font/poppins_bold"
         android:textSize="20sp"
         android:textColor="@color/white"
@@ -26,7 +26,7 @@
         android:id="@+id/teksdua"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="24dp"
-        android:text="Welcome back in our application"
+        android:text="@string/signInDesc"
         android:fontFamily="@font/poppins_regular"
         android:textSize="12sp"
         android:textColor="@color/white"
@@ -44,45 +44,60 @@
             android:layout_height="wrap_content"
             android:id="@+id/teksemail"
             android:layout_marginTop="40dp"
-            android:text="Email Address"
+            android:text="@string/email_address"
             android:fontFamily="@font/poppins_medium"
             android:textSize="12sp"
             android:textColor="@color/white"
             />
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_edt"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/edt_email"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:hint="Email Address "
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="12sp"
-            android:inputType="textEmailAddress" />
+            android:layout_height="wrap_content"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/poppins_regular"
+                tools:text="@string/email_address"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10dp"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tekspassword"
             android:layout_marginTop="40dp"
-            android:text="Password"
+            android:text="@string/password"
             android:fontFamily="@font/poppins_medium"
             android:textSize="12sp"
             android:textColor="@color/white"
             />
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_edt"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/edt_password"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:hint="Password"
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="12sp"
-            android:inputType="textVisiblePassword" />
+            android:layout_height="wrap_content"
+            app:hintEnabled="true"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/poppins_regular"
+                tools:text="@string/password"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <Button
@@ -93,7 +108,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="250dp"
         android:fontFamily="@font/poppins_medium"
-        android:text="Forgot Password?"
+        android:text="@string/forgot_password"
         android:textColor="@color/white"
         android:backgroundTint="@color/skyblue"
         android:textSize="12sp" />
@@ -103,24 +118,24 @@
         android:layout_below="@+id/teksforgot"
         android:width="230dp"
         android:height="53dp"
-        android:id="@+id/buttonlogin"
+        android:id="@+id/btnLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:text="Sign In"
+        android:text="@string/signInText"
         android:textColor="@color/white"
         android:background="@drawable/button_shape"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="14sp"/>
-    <Button
-        android:id="@+id/teksregister"
+    <TextView
+        android:id="@+id/txtRegis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonlogin"
+        android:layout_below="@+id/btnLogin"
         android:layout_marginTop="22dp"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/poppins_medium"
-        android:text="Not registered yet? Create an Account"
+        android:text="@string/not_registered_yet_create_an_account"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:backgroundTint="@color/skyblue"/>
+        />
 </RelativeLayout>
