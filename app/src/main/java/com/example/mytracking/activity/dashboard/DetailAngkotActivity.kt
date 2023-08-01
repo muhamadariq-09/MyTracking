@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.example.mytracking.DirectionActivity
-import com.example.mytracking.activity.home.NavigationActivity
 import com.example.mytracking.databinding.ActivityDetailAngkotBinding
 import com.example.mytracking.models.Angkot
 

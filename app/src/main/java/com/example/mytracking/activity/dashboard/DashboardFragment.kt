@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,9 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mytracking.adapter.AngkotAdapter
 import com.example.mytracking.databinding.FragmentDashboardBinding
-import com.example.mytracking.models.Angkot
 import com.example.mytracking.models.AngkotViewModel
-import java.util.Locale
 
 class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding

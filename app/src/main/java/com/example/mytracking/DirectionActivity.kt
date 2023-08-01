@@ -98,7 +98,7 @@ class DirectionActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val result =  ArrayList<List<LatLng>>()
             try{
-                val respObj = Gson().fromJson(data,MapData::class.java)
+                val respObj = Gson().fromJson(data, MapData::class.java)
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))

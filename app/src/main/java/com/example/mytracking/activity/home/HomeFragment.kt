@@ -11,7 +11,6 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -284,6 +283,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
+
+    @Suppress("DEPRECATION")
     private fun createLocationRequest() {
         locationRequest = LocationRequest.create().apply {
             interval = TimeUnit.SECONDS.toMillis(1)
