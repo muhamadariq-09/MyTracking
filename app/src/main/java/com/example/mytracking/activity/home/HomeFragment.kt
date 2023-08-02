@@ -159,8 +159,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         return foregroundLocationApproved && backgroundPermissionApproved
     }
-
+    @SuppressLint("MissingPermission")
     private val locListener = object : ValueEventListener {
+
 
         override fun onDataChange(snapshot: DataSnapshot) {
             if(snapshot.exists()){
@@ -184,6 +185,38 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                 val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
                                 //update the camera with the CameraUpdate object
                                 mMap.moveCamera(update)
+
+                                geofencingClient = LocationServices.getGeofencingClient(requireContext())
+
+                                val geofence = Geofence.Builder()
+                                    .setRequestId("Users")
+                                    .setCircularRegion(
+                                        lat,
+                                        lng,
+                                        geofenceRadius.toFloat()
+                                    )
+                                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_ENTER)
+                                    .setLoiteringDelay(1000)
+                                    .build()
+
+                                val geofencingRequest = GeofencingRequest.Builder()
+                                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                                    .addGeofence(geofence)
+                                    .build()
+
+                                geofencingClient.removeGeofences(geofencePendingIntent).run {
+                                    addOnCompleteListener {
+                                        geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
+                                            addOnSuccessListener {
+                                                Toast.makeText(context, "Geofencing added", Toast.LENGTH_SHORT).show()
+                                            }
+                                            addOnFailureListener {
+                                                Toast.makeText(context, "Geofencing not added : ${it.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    }
+                                }
                             } else {
                                 Toast.makeText(
                                     context,
@@ -226,37 +259,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
                         mMap.isMyLocationEnabled = true
 
-                        geofencingClient = LocationServices.getGeofencingClient(requireContext())
 
-                        val geofence = Geofence.Builder()
-                            .setRequestId("Users")
-                            .setCircularRegion(
-                                location.latitude,
-                                location.longitude,
-                                geofenceRadius.toFloat()
-                            )
-                            .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_ENTER)
-                            .setLoiteringDelay(1000)
-                            .build()
-
-                        val geofencingRequest = GeofencingRequest.Builder()
-                            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                            .addGeofence(geofence)
-                            .build()
-
-                        geofencingClient.removeGeofences(geofencePendingIntent).run {
-                            addOnCompleteListener {
-                                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
-                                    addOnSuccessListener {
-                                        Toast.makeText(context, "Geofencing added", Toast.LENGTH_SHORT).show()
-                                    }
-                                    addOnFailureListener {
-                                        Toast.makeText(context, "Geofencing not added : ${it.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
-                        }
                     } else {
                         Toast.makeText(context, "No Location Found", Toast.LENGTH_SHORT).show()
                     }
