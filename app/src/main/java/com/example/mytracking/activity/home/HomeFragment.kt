@@ -189,7 +189,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                 geofencingClient = LocationServices.getGeofencingClient(requireContext())
 
                                 val geofence = Geofence.Builder()
-                                    .setRequestId("Users")
+                                    .setRequestId("penumpang")
                                     .setCircularRegion(
                                         lat,
                                         lng,
