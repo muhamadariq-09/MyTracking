@@ -9,8 +9,10 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +42,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -50,9 +54,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class HomeFragment : Fragment(), OnMapReadyCallback {
+class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
+    GoogleMap.OnMarkerDragListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var mMap: GoogleMap
@@ -60,9 +66,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var dbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Driver")
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private var isTracking = false
     private lateinit var auth: FirebaseAuth
     private val geofenceRadius = 500.0
     private lateinit var geofencingClient: GeofencingClient
+    private lateinit var mMarker: Marker
+    private lateinit var geocoder: Geocoder
 
 
 
@@ -71,7 +80,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
 
         return binding.root
     }
@@ -86,11 +94,28 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(context, "Notifications permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         auth = FirebaseAuth.getInstance()
         setupLocClient()
+        geocoder = Geocoder(requireContext())
         dbReference = Firebase.database.reference
         dbReference.addValueEventListener(locListener)
 
@@ -107,9 +132,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mMap.uiSettings.isCompassEnabled = true
         mMap.uiSettings.isMapToolbarEnabled = true
 
+        mMap.setOnMapLongClickListener(this)
+        mMap.setOnMarkerDragListener(this)
+
         getMyLocation()
         createLocationRequest()
         createLocationCallback()
+
 
     }
 
@@ -181,8 +210,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                 val latLng = LatLng(lat, lng)
                                 mMap.addMarker(
                                     MarkerOptions().position(latLng)
-                                        .title("The driver is currently here")
+                                        .title("${userSnapshot.child("name").value}")
+                                        .icon(
+                                            BitmapDescriptorFactory.defaultMarker(
+                                                BitmapDescriptorFactory.HUE_BLUE))
                                 )
+
+
                                 val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
                                 //update the camera with the CameraUpdate object
                                 mMap.moveCamera(update)
@@ -250,6 +284,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private fun getMyLocation() {
         if (checkForegroundAndBackgroundLocationPermission()) {
+            mMap.isMyLocationEnabled = true
                 fusedLocClient.lastLocation.addOnCompleteListener {
                     val location = it.result //obtain location
                     val user = FirebaseAuth.getInstance().currentUser
@@ -258,8 +293,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     databaseRef.child("Users").child(user!!.uid).child("userlocation").setValue(locationlogging)
                     if (location != null) {
 
-                        mMap.isMyLocationEnabled = true
-
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        mMap.addMarker(
+                            MarkerOptions().position(latLng)
+                                .title("You are currently here")
+                                .rotation(location.bearing)
+                        )
+                        val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
+                        //update the camera with the CameraUpdate object
+                        mMap.moveCamera(update)
 
                     } else {
                         Toast.makeText(context, "No Location Found", Toast.LENGTH_SHORT).show()
@@ -286,6 +328,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     ).show()
             }
         }
+
 
 
 
@@ -319,9 +362,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun createLocationCallback() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                locationResult.lastLocation
+                locationResult.lastLocation!!
                 for (location in locationResult.locations) {
                     Log.d(TAG, "onLocationResult: " + location.latitude + ", " + location.longitude)
+
+                    if (mMap != null) {
+                        updateMarker(locationResult.lastLocation!!)
+                    }
 
 
                 }
@@ -329,12 +376,117 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun updateMarker(location: android.location.Location) {
+        val latLng = LatLng(location.latitude, location.longitude)
+        if (mMarker == null) {
+            val markerOptions = MarkerOptions()
+            markerOptions.position(latLng)
+                .rotation(location.bearing)
+            mMarker = mMap.addMarker(markerOptions)!!
+            val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
+            //update the camera with the CameraUpdate object
+            mMap.moveCamera(update)
+
+        } else {
+            mMarker.position = latLng
+            mMarker.rotation = location.bearing
+            val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
+            //update the camera with the CameraUpdate object
+            mMap.moveCamera(update)
+
+        }
+    }
+
+    private fun startLocationUpdates() {
+        try {
+            fusedLocClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        } catch (exception: SecurityException) {
+            Log.e(TAG, "Error : " + exception.message)
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocClient.removeLocationUpdates(locationCallback)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onMapLongClick(p0: LatLng) {
+        Log.d(TAG, "onMapLongClick: $p0")
+
+        try {
+            val addresses = geocoder.getFromLocation(p0.latitude, p0.longitude, 1)
+            if (addresses != null) {
+                if (addresses.size > 0) {
+                    val address = addresses[0]
+                    val streetAddress = address.getAddressLine(0)
+                    mMap.addMarker(
+                        MarkerOptions().position(p0)
+                            .title(streetAddress)
+                            .draggable(true)
+                    )
+                }
+            }
+        }
+        catch (e: IOException) {
+                e.printStackTrace()
+        }
+    }
+
+    override fun onMarkerDrag(p0: Marker) {
+        Log.d(TAG, "onMarkerDrag: ")
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onMarkerDragEnd(p0: Marker) {
+        Log.d(TAG, "onMarkerDragEnd: ")
+        val latLng = p0.position
+        try {
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses != null) {
+                if (addresses.size > 0) {
+                    val address = addresses[0]
+                    val streetAddress = address.getAddressLine(0)
+                    mMap.addMarker(
+                        MarkerOptions().position(latLng)
+                            .title(streetAddress)
+                    )
+                }
+            }
+        }
+        catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onMarkerDragStart(p0: Marker) {
+        Log.d(TAG, "onMarkerDragStart: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isTracking) {
+            startLocationUpdates()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
 
 
     companion object {
         private const val TAG = "HomeFragment"
     }
 
-}
+
+
+    }
+
+
 
 

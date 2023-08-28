@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -27,7 +28,12 @@ class EditAccountActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Edit Account"
+
         getUser()
+
+
 
         binding.btnSave.setOnClickListener {
             val name = binding.edtNama.text.toString()
@@ -66,7 +72,17 @@ class EditAccountActivity : AppCompatActivity() {
 
         }
         checkUser()
-        setupView()
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home ->
+
+                startActivity(Intent(this, AccountDetailActivity::class.java))
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
@@ -103,16 +119,4 @@ class EditAccountActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupView(){
-        @Suppress("DEPRECATION")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        }
-        supportActionBar?.hide()
-    }
 }

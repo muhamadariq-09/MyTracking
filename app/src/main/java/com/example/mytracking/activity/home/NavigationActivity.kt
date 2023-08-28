@@ -40,8 +40,8 @@ class NavigationActivity : AppCompatActivity() {
             ))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
         setupView()
+
     }
 
     private fun checkUser() {
@@ -52,9 +52,7 @@ class NavigationActivity : AppCompatActivity() {
         }
     }
 
-
-
-    private fun setupView(){
+    private fun setupView() {
         @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
@@ -66,4 +64,5 @@ class NavigationActivity : AppCompatActivity() {
         }
         supportActionBar?.hide()
     }
+
 }

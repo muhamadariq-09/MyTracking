@@ -2,22 +2,43 @@
 
 package com.example.mytracking
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.example.mytracking.activity.dashboard.DetailAngkotActivity
+import com.example.mytracking.activity.profile.AccountDetailActivity
 import com.example.mytracking.databinding.ActivityDirectionBinding
+import com.example.mytracking.models.Angkot
+import com.example.mytracking.models.Location
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -26,10 +47,16 @@ class DirectionActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityDirectionBinding
-    private var originLatitude: Double =  -6.372305799999999
-    private var originLongitude: Double = 106.8330489
-    private var destinationLatitude: Double = -6.376783499999999
-    private var destinationLongitude: Double = 106.873941
+    private lateinit var fusedLocClient: FusedLocationProviderClient
+
+
+    private var CicadasLatitude: Double = -6.910050730650377
+    private var CicadasLongitude: Double = 107.6400656050305
+
+    private var CicaheumLatitude: Double = -6.902131
+    private var CicaheumLongitude: Double = 107.657125
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,42 +74,159 @@ class DirectionActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        setupLocClient()
 
-        val btnClick = binding.directions
 
-        btnClick.setOnClickListener {
 
-            mapFragment.getMapAsync {
-                mMap = it
-                val originLocation = LatLng(originLatitude, originLongitude)
-                mMap.addMarker(MarkerOptions().position(originLocation))
-                val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
-                mMap.addMarker(MarkerOptions().position(destinationLocation))
-                val urll = getDirectionURL(originLocation, destinationLocation)
-                GetDirection(urll).execute()
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 14F))
-            }
+        val latitude = intent.getParcelableExtra<Angkot>("latitude")
+        val longitude = intent.getParcelableExtra<Angkot>("longitude")
+
+
+        if (latitude != null && longitude != null) {
+            latitude.Latitude
+            longitude.Longitude
         }
 
     }
 
+
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-        val originLocation = LatLng(originLatitude, originLongitude)
+        getMyLocation()
         mMap.clear()
-        mMap.addMarker(MarkerOptions().position(originLocation))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 18F))
+
+    }
+
+    private fun setupLocClient() {
+        fusedLocClient = LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private val requestBackgroundLocationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                getMyLocation()
+            }
+        }
+
+    private val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                if (runningQOrLater) {
+                    requestBackgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                } else {
+                    getMyLocation()
+                }
+            }
+        }
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    private fun checkForegroundAndBackgroundLocationPermission(): Boolean {
+        val foregroundLocationApproved = checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        val backgroundPermissionApproved =
+            if (runningQOrLater) {
+                checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            } else {
+                true
+            }
+        return foregroundLocationApproved && backgroundPermissionApproved
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getMyLocation() {
+        if (checkForegroundAndBackgroundLocationPermission()) {
+            mMap.isMyLocationEnabled = true
+            fusedLocClient.lastLocation.addOnCompleteListener {
+                val location = it.result //obtain location
+
+                if (location != null) {
+
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mMap.addMarker(
+                        MarkerOptions().position(latLng)
+                            .title("You are currently here")
+                    )
+                    val update = CameraUpdateFactory.newLatLngZoom(latLng, 18.0f)
+                    //update the camera with the CameraUpdate object
+                    mMap.moveCamera(update)
+
+
+
+                    binding.directions.setOnClickListener {
+                        val jurusan = intent.getStringExtra("jurusan")
+
+                        if(jurusan.toString() == "Cibiru - Cicadas") {
+
+                            val destinationLocation = LatLng(CicadasLatitude, CicadasLongitude)
+                            mMap.addMarker(
+                                MarkerOptions().position(destinationLocation)
+                                    .icon(
+                                        BitmapDescriptorFactory.defaultMarker(
+                                            BitmapDescriptorFactory.HUE_GREEN
+                                        )
+                                    )
+
+                            )
+                            val urll = getDirectionURL(latLng, destinationLocation)
+                            GetDirection(urll).execute()
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14F))
+
+                        }
+                        else if(jurusan.toString() == "Cicaheum - Cileunyi") {
+
+                            val destinationLocation = LatLng(CicaheumLatitude, CicaheumLongitude)
+                            mMap.addMarker(
+                                MarkerOptions().position(destinationLocation)
+                                    .icon(
+                                        BitmapDescriptorFactory.defaultMarker(
+                                            BitmapDescriptorFactory.HUE_GREEN
+                                        )
+                                    )
+
+                            )
+                            val urll = getDirectionURL(latLng, destinationLocation)
+                            GetDirection(urll).execute()
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14F))
+
+                        }
+
+                    }
+
+
+
+                } else {
+                    Toast.makeText(this, "No Location", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        } else {
+            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
 
     private fun getDirectionURL(origin: LatLng, dest: LatLng) : String{
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
                 "&destination=${dest.latitude},${dest.longitude}" +
                 "&sensor=false" +
-                "&mode=driving" +
+                "&mode=transit" +
                 "&key=AIzaSyAzdJ-wZ_LwfEFfwM35ltswVCUoeP1dMaA"
     }
 

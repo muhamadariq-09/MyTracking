@@ -1,11 +1,9 @@
 package com.example.mytracking.activity.profile
 
 import android.content.Intent
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowInsets
-import android.view.WindowManager
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.example.mytracking.activity.auth.LoginActivity
 import com.example.mytracking.databinding.ActivityAccountDetailBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -33,7 +31,7 @@ class AccountDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        setupView()
+        supportActionBar?.title = "Detail Account"
 
 
     }
@@ -64,6 +62,7 @@ class AccountDetailActivity : AppCompatActivity() {
             })
     }
 
+
     private fun checkUser() {
         val firebaseUser = auth.currentUser
         if (firebaseUser == null) {
@@ -72,16 +71,5 @@ class AccountDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupView(){
-        @Suppress("DEPRECATION")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        }
-        supportActionBar?.hide()
-    }
+
 }

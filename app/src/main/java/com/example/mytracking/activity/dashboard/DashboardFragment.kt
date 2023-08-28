@@ -47,6 +47,7 @@ class DashboardFragment : Fragment() {
         })
 
 
+
         adapter.onItemClick = {
             val intent = Intent(context, DetailAngkotActivity::class.java)
             intent.putExtra("Angkot", it)

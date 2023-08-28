@@ -37,7 +37,8 @@
         <activity
             android:name=".DirectionActivity"
             android:exported="false"
-            android:label="@string/title_activity_direction" />
+            android:label="@string/title_activity_direction"
+            />
 
         <receiver
             android:name=".GeofenceBroadcastReceiver"
@@ -46,16 +47,19 @@
 
         <activity
             android:name=".activity.profile.EditAccountActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activity.profile.AccountDetailActivity"/>
         <activity
             android:name=".activity.profile.AboutUsActivity"
             android:exported="false" />
         <activity
             android:name=".activity.profile.AccountDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".activity.dashboard.DetailAngkotActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".activity.home.NavigationActivity"
             android:exported="false" />
